@@ -1,12 +1,8 @@
 dump978-fa (10.0) stable; urgency=medium
 
-  [ Nick Wan ]
-  * No change release for 10.0~dev
-
-  [ Nicholas Wan ]
   * No change release for 10.0
 
- -- Nicholas Wan <nicholas.wan@flightaware.com>  Wed, 26 Feb 2025 17:39:48 +0000
+ -- Nicholas Wan <nicholas.wan@flightaware.com>  Wed, 26 Feb 2025 17:42:40 +0000
 
 dump978-fa (9.0) stable; urgency=medium
 
