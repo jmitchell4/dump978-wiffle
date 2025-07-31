@@ -69,10 +69,6 @@ std::ostream &flightaware::uat::operator<<(std::ostream &os, const RawMessage &m
 //
 
 AdsbMessage::AdsbMessage(const RawMessage &raw) {
-    if (raw.Type() != MessageType::DOWNLINK_SHORT && raw.Type() != MessageType::DOWNLINK_LONG) {
-        throw std::logic_error("can't parse this sort of message as a downlink ADS-B message");
-    }
-
     // Metadata
     received_at = raw.ReceivedAt();
     raw_timestamp = raw.RawTimestamp();
@@ -81,10 +77,19 @@ AdsbMessage::AdsbMessage(const RawMessage &raw) {
     type = raw.Type();
     payload = Bytes(raw.Payload());
 
+    if (raw.Type() == MessageType::METADATA || raw.Type() == MessageType::INVALID) {
+        //throw std::logic_error("can't parse this sort of message as a downlink ADS-B message");
+        return;
+    }
+
     // HDR
     payload_type = raw.Bits(1, 1, 1, 5);
     address_qualifier = static_cast<AddressQualifier>(raw.Bits(1, 6, 1, 8));
     address = raw.Bits(2, 1, 4, 8);
+
+    if (raw.Type() != MessageType::DOWNLINK_SHORT && raw.Type() != MessageType::DOWNLINK_LONG) {
+        return;
+    }
 
     // Optional parts of the message
     // DO-282B Table 2-10 "Composition of the ADS-B Payload"
