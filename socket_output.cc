@@ -110,9 +110,7 @@ void JsonOutput::InternalWrite(SharedMessageVector messages) {
 
 void WiffleOutput::InternalWrite(SharedMessageVector messages) {
     for (const auto &message : *messages) {
-        if (message.Type() == MessageType::DOWNLINK_SHORT || message.Type() == MessageType::DOWNLINK_LONG) {
-            Buf() << AdsbMessage(message) << '\n';
-        }
+        Buf() << AdsbMessage(message) << '\n';
     }
 }
 
