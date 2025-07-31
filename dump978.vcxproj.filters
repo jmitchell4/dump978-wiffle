@@ -18,108 +18,108 @@
     <ClCompile Include="dump978.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\convert.cc">
+    <ClCompile Include="convert.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\demodulator.cc">
+    <ClCompile Include="demodulator.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\dump978_main.cc">
+    <ClCompile Include="dump978_main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\faup978_main.cc">
+    <ClCompile Include="faup978_main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\faup978_reporter.cc">
+    <ClCompile Include="faup978_reporter.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\fec.cc">
+    <ClCompile Include="fec.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\fec_tests.cc">
+    <ClCompile Include="fec_tests.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\message_dispatch.cc">
+    <ClCompile Include="message_dispatch.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\sample_source.cc">
+    <ClCompile Include="sample_source.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\skyaware_writer.cc">
+    <ClCompile Include="skyaware_writer.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\skyaware978_main.cc">
+    <ClCompile Include="skyaware978_main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\soapy_source.cc">
+    <ClCompile Include="soapy_source.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\socket_input.cc">
+    <ClCompile Include="socket_input.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\socket_output.cc">
+    <ClCompile Include="socket_output.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\stratux_serial.cc">
+    <ClCompile Include="stratux_serial.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\track.cc">
+    <ClCompile Include="track.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\dump978\uat_message.cc">
+    <ClCompile Include="uat_message.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\dump978\common.h">
+    <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\convert.h">
+    <ClInclude Include="convert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\demodulator.h">
+    <ClInclude Include="demodulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\exception.h">
+    <ClInclude Include="exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\faup978_reporter.h">
+    <ClInclude Include="faup978_reporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\fec.h">
+    <ClInclude Include="fec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\message_dispatch.h">
+    <ClInclude Include="message_dispatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\message_source.h">
+    <ClInclude Include="message_source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\sample_source.h">
+    <ClInclude Include="sample_source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\skyaware_writer.h">
+    <ClInclude Include="skyaware_writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\soapy_source.h">
+    <ClInclude Include="soapy_source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\socket_input.h">
+    <ClInclude Include="socket_input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\socket_output.h">
+    <ClInclude Include="socket_output.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\stratux_serial.h">
+    <ClInclude Include="stratux_serial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\track.h">
+    <ClInclude Include="track.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\uat_message.h">
+    <ClInclude Include="uat_message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\dump978\uat_protocol.h">
+    <ClInclude Include="uat_protocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
