@@ -235,7 +235,9 @@ static int realmain(int argc, char **argv) {
     if (opts.count("wiffle-stdout")) {
         dispatch.AddClient([](SharedMessageVector messages) {
             for (const auto &message : *messages) {
-                std::cout << AdsbMessage(message) << std::endl;
+                if (message.Type() == MessageType::DOWNLINK_SHORT || message.Type() == MessageType::DOWNLINK_LONG) {
+                    std::cout << AdsbMessage(message) << std::endl;
+                }
             }
         });
     }
