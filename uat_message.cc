@@ -78,6 +78,8 @@ AdsbMessage::AdsbMessage(const RawMessage &raw) {
     raw_timestamp = raw.RawTimestamp();
     errors = raw.Errors();
     rssi = raw.Rssi();
+    type = raw.Type();
+    payload = Bytes(raw.Payload());
 
     // HDR
     payload_type = raw.Bits(1, 1, 1, 5);
@@ -426,6 +428,68 @@ void AdsbMessage::DecodeAUXSV(const RawMessage &raw) {
             geometric_altitude = altitude;
         }
     }
+}
+
+// Writing/streaming AdsbMessage to Wiffle CSV
+std::ostream &flightaware::uat::operator<<(std::ostream &os, const AdsbMessage &message) {
+    boost::io::ios_flags_saver ifs(os);
+
+    os << "uat";
+    switch (message.type) {
+    case MessageType::DOWNLINK_SHORT:
+    case MessageType::DOWNLINK_LONG:
+        os << '-';
+        break;
+    case MessageType::UPLINK:
+        os << '+';
+        break;
+    case MessageType::METADATA:
+        os << '!';
+        break;
+    default:
+        throw std::logic_error("unexpected message type");
+    }
+    os << ",";
+
+    // time in iso format, and as epoch millis 
+    std::uint64_t epochMsec = message.received_at;
+    time_t received = (time_t)(epochMsec / 1000);
+    int milliseconds = epochMsec % 1000;
+    struct tm *local_tm = gmtime(&received);
+    char time_string[80];
+    strftime(time_string, sizeof(time_string), "%Y-%m-%dT%H:%M:%S", local_tm);
+    sprintf(&time_string[strlen(time_string)], ".%03dZ", milliseconds);
+
+    os << time_string << "," << std::dec << epochMsec << ",";
+
+    // icao
+    os << std::hex << std::setfill('0') << std::setw(6) << message.address << std::dec << ",";
+
+    // address qualifier
+    os << (int)message.address_qualifier << ",";
+
+    // df (type in this case) 
+    os << (int)message.type << ",";
+
+    // rssi 
+    os << std::dec << std::setprecision(1) << std::fixed << message.rssi << ",";
+
+    // message payload 
+    if (message.type != MessageType::METADATA) {
+        os << std::setfill('0');
+        for (auto b : message.payload) {
+            os << std::hex << std::setw(2) << (int)b;
+        }
+    } else {
+        os << "*metadata*";
+        /*
+        for (auto &i : message.Metadata()) {
+            os << i.first << '=' << i.second << ';';
+        }
+        */
+    }
+
+    return os;
 }
 
 //

@@ -108,6 +108,16 @@ void JsonOutput::InternalWrite(SharedMessageVector messages) {
 
 //////////////
 
+void WiffleOutput::InternalWrite(SharedMessageVector messages) {
+    for (const auto &message : *messages) {
+        if (message.Type() == MessageType::DOWNLINK_SHORT || message.Type() == MessageType::DOWNLINK_LONG) {
+            Buf() << AdsbMessage(message).ToJson() << '\n';
+        }
+    }
+}
+
+//////////////
+
 SocketListener::SocketListener(asio::io_service &service, const tcp::endpoint &endpoint, MessageDispatch &dispatch, ConnectionFactory factory) : service_(service), acceptor_(service), endpoint_(endpoint), socket_(service), dispatch_(dispatch), factory_(factory) {}
 
 void SocketListener::Start() {
