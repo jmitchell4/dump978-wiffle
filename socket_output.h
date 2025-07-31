@@ -80,6 +80,18 @@ namespace flightaware::uat {
         JsonOutput(boost::asio::io_service &service_, boost::asio::ip::tcp::socket &&socket_) : SocketOutput(service_, std::move(socket_)) {}
     };
 
+    class WiffleOutput : public SocketOutput {
+      public:
+        // factory method, this class must always be constructed via make_shared
+        static Pointer Create(boost::asio::io_service &service, boost::asio::ip::tcp::socket &&socket) { return Pointer(new WiffleOutput(service, std::move(socket))); }
+
+      protected:
+        void InternalWrite(SharedMessageVector messages) override;
+
+      private:
+        WiffleOutput(boost::asio::io_service &service_, boost::asio::ip::tcp::socket &&socket_) : SocketOutput(service_, std::move(socket_)) {}
+    };
+
     class SocketListener : public std::enable_shared_from_this<SocketListener> {
       public:
         typedef std::shared_ptr<SocketListener> Pointer;

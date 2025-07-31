@@ -228,6 +228,8 @@ namespace flightaware::uat {
         std::uint64_t raw_timestamp;
         unsigned errors;
         float rssi;
+        MessageType type;
+        Bytes payload;
 
         // 2.2.4.5 HEADER Element
         unsigned payload_type;
@@ -296,6 +298,9 @@ namespace flightaware::uat {
         void DecodeMS(const RawMessage &raw);
         void DecodeAUXSV(const RawMessage &raw);
     };
+
+    std::ostream &operator<<(std::ostream &os, const AdsbMessage &message);
+
 } // namespace flightaware::uat
 
 #endif

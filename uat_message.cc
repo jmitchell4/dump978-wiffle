@@ -69,20 +69,27 @@ std::ostream &flightaware::uat::operator<<(std::ostream &os, const RawMessage &m
 //
 
 AdsbMessage::AdsbMessage(const RawMessage &raw) {
-    if (raw.Type() != MessageType::DOWNLINK_SHORT && raw.Type() != MessageType::DOWNLINK_LONG) {
-        throw std::logic_error("can't parse this sort of message as a downlink ADS-B message");
-    }
-
     // Metadata
     received_at = raw.ReceivedAt();
     raw_timestamp = raw.RawTimestamp();
     errors = raw.Errors();
     rssi = raw.Rssi();
+    type = raw.Type();
+    payload = Bytes(raw.Payload());
+
+    if (raw.Type() == MessageType::METADATA || raw.Type() == MessageType::INVALID) {
+        //throw std::logic_error("can't parse this sort of message as a downlink ADS-B message");
+        return;
+    }
 
     // HDR
     payload_type = raw.Bits(1, 1, 1, 5);
     address_qualifier = static_cast<AddressQualifier>(raw.Bits(1, 6, 1, 8));
     address = raw.Bits(2, 1, 4, 8);
+
+    if (raw.Type() != MessageType::DOWNLINK_SHORT && raw.Type() != MessageType::DOWNLINK_LONG) {
+        return;
+    }
 
     // Optional parts of the message
     // DO-282B Table 2-10 "Composition of the ADS-B Payload"
@@ -426,6 +433,68 @@ void AdsbMessage::DecodeAUXSV(const RawMessage &raw) {
             geometric_altitude = altitude;
         }
     }
+}
+
+// Writing/streaming AdsbMessage to Wiffle CSV
+std::ostream &flightaware::uat::operator<<(std::ostream &os, const AdsbMessage &message) {
+    boost::io::ios_flags_saver ifs(os);
+
+    os << "uat";
+    switch (message.type) {
+    case MessageType::DOWNLINK_SHORT:
+    case MessageType::DOWNLINK_LONG:
+        os << '-';
+        break;
+    case MessageType::UPLINK:
+        os << '+';
+        break;
+    case MessageType::METADATA:
+        os << '!';
+        break;
+    default:
+        throw std::logic_error("unexpected message type");
+    }
+    os << ",";
+
+    // time in iso format, and as epoch millis 
+    std::uint64_t epochMsec = message.received_at;
+    time_t received = (time_t)(epochMsec / 1000);
+    int milliseconds = epochMsec % 1000;
+    struct tm *local_tm = gmtime(&received);
+    char time_string[80];
+    strftime(time_string, sizeof(time_string), "%Y-%m-%dT%H:%M:%S", local_tm);
+    sprintf(&time_string[strlen(time_string)], ".%03dZ", milliseconds);
+
+    os << time_string << "," << std::dec << epochMsec << ",";
+
+    // icao
+    os << std::hex << std::setfill('0') << std::setw(6) << message.address << std::dec << ",";
+
+    // address qualifier
+    os << (int)message.address_qualifier << ",";
+
+    // df (type in this case) 
+    os << (int)message.type << ",";
+
+    // rssi 
+    os << std::dec << std::setprecision(1) << std::fixed << message.rssi << ",";
+
+    // message payload 
+    if (message.type != MessageType::METADATA) {
+        os << std::setfill('0');
+        for (auto b : message.payload) {
+            os << std::hex << std::setw(2) << (int)b;
+        }
+    } else {
+        os << "*metadata*";
+        /*
+        for (auto &i : message.Metadata()) {
+            os << i.first << '=' << i.second << ';';
+        }
+        */
+    }
+
+    return os;
 }
 
 //

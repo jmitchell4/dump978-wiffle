@@ -85,6 +85,7 @@ static int realmain(int argc, char **argv) {
         ("version", "show version")
         ("raw-stdout", "write raw messages to stdout")
         ("json-stdout", "write decoded json to stdout")
+        ("wiffle-stdout", "write wiffle csv to stdout")
         ("format", po::value<SampleFormat>(), "set sample format")
         ("stdin", "read sample data from stdin")
         ("file", po::value<std::string>(), "read sample data from a file")
@@ -99,7 +100,8 @@ static int realmain(int argc, char **argv) {
         ("stratuxv3", po::value<std::string>(), "read messages from Stratux v3 UAT dongle on given serial port")
         ("raw-port", po::value<std::vector<listen_option>>(), "listen for connections on [host:]port and provide raw messages")
         ("raw-legacy-port", po::value<std::vector<listen_option>>(), "listen for connections on [host:]port and provide raw messages, with no initial metadata header")
-        ("json-port", po::value<std::vector<listen_option>>(), "listen for connections on [host:]port and provide decoded json");
+        ("json-port", po::value<std::vector<listen_option>>(), "listen for connections on [host:]port and provide decoded json")
+        ("wiffle-port", po::value<std::vector<listen_option>>(), "listen for connections on [host:]port and provide wiffle csv output");
     // clang-format on
 
     po::variables_map opts;
@@ -207,7 +209,8 @@ static int realmain(int argc, char **argv) {
     auto raw_legacy_ok = create_output_port("raw-legacy-port", raw_legacy_factory);
 
     auto json_ok = create_output_port("json-port", &JsonOutput::Create);
-    if (!raw_ok || !raw_legacy_ok || !json_ok) {
+    auto wiffle_ok = create_output_port("wiffle-port", &WiffleOutput::Create);
+    if (!raw_ok || !raw_legacy_ok || !json_ok || !wiffle_ok) {
         return 1;
     }
 
@@ -225,6 +228,14 @@ static int realmain(int argc, char **argv) {
                 if (message.Type() == MessageType::DOWNLINK_SHORT || message.Type() == MessageType::DOWNLINK_LONG) {
                     std::cout << AdsbMessage(message).ToJson() << std::endl;
                 }
+            }
+        });
+    }
+
+    if (opts.count("wiffle-stdout")) {
+        dispatch.AddClient([](SharedMessageVector messages) {
+            for (const auto &message : *messages) {
+                 std::cout << AdsbMessage(message) << std::endl;
             }
         });
     }
