@@ -470,11 +470,57 @@ std::ostream &flightaware::uat::operator<<(std::ostream &os, const AdsbMessage &
     // icao
     os << std::hex << std::setfill('0') << std::setw(6) << message.address << std::dec << ",";
 
+    std::string aq;
+    switch (message.address_qualifier) {
+       case AddressQualifier::ADSB_ICAO:
+       case AddressQualifier::ADSB_OTHER:
+           aq = "ADSB";
+           break;
+       case AddressQualifier::VEHICLE:
+           aq = "VEH";
+           break;
+       case AddressQualifier::FIXED_BEACON:
+           aq = "FIXED";
+           break;
+       case AddressQualifier::TISB_ICAO:
+       case AddressQualifier::TISB_TRACKFILE:
+           aq = "TISB";
+           break;
+       case AddressQualifier::ADSR_OTHER:
+           aq = "ADSR";
+           break;
+       case AddressQualifier::RESERVED:
+           aq = "RES";
+           break;
+       default:
+           aq = "UNKN";
+           break;
+    }
+
+    std::string msgType;
+    switch (message.type) { 
+      case MessageType::DOWNLINK_SHORT:
+           msgType = "DS";
+           break;
+      case MessageType::DOWNLINK_LONG:
+          msgType = "DL";
+          break;
+      case MessageType::UPLINK:
+          msgType = "UP";
+          break;
+      case MessageType::METADATA:
+          msgType = "MET";
+          break;
+      default:
+          msgType = "UKN";
+          break;
+    }
+
     // address qualifier
-    os << (int)message.address_qualifier << ",";
+    os << aq << (int)message.address_qualifier << ",";
 
     // df (type in this case) 
-    os << (int)message.type << ",";
+    os << msgType << (int)message.type << ",";
 
     // rssi 
     os << std::dec << std::setprecision(1) << std::fixed << message.rssi << ",";
