@@ -110,7 +110,10 @@ void JsonOutput::InternalWrite(SharedMessageVector messages) {
 
 void WiffleOutput::InternalWrite(SharedMessageVector messages) {
     for (const auto &message : *messages) {
-        Buf() << AdsbMessage(message) << '\n';
+        //Buf() << AdsbMessage(message) << '\n';
+        // to avoid bundling, flush after every write in
+        Buf() << AdsbMessage(message);
+        Flush();
     }
 }
 
