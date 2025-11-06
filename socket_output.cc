@@ -44,14 +44,23 @@ void SocketOutput::Write(SharedMessageVector messages) {
 
 void SocketOutput::Flush() {
     if (flush_pending_)
+    {
+        std::cerr << "flush is pending" << std::endl;
         return;
-
+    }
+    
     auto writebuf = std::make_shared<std::string>(outbuf_.str());
     if (writebuf->empty())
+    {
+        std::cerr << "nothing to flush" << std::endl;
         return;
+    }
 
     flush_pending_ = true;
     outbuf_.str(std::string());
+
+    // TODO 
+    // try to extract/split the string by 0x0a, and only async_write the first one, leaving the rest behind for the next time 
 
     auto self(shared_from_this());
     async_write(socket_, boost::asio::buffer(*writebuf), strand_.wrap([this, self, writebuf](const boost::system::error_code &ec, size_t len) {
