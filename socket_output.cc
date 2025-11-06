@@ -44,23 +44,30 @@ void SocketOutput::Write(SharedMessageVector messages) {
 
 void SocketOutput::Flush() {
     if (flush_pending_)
-    {
-        std::cerr << "flush is pending" << std::endl;
         return;
-    }
     
     auto writebuf = std::make_shared<std::string>(outbuf_.str());
     if (writebuf->empty())
-    {
-        std::cerr << "nothing to flush" << std::endl;
         return;
-    }
 
     flush_pending_ = true;
-    outbuf_.str(std::string());
 
-    // TODO 
-    // try to extract/split the string by 0x0a, and only async_write the first one, leaving the rest behind for the next time 
+    // extract the first line from the data 
+    std::istringstream iss(*writebuf);
+    std::string firstMessage;
+    std::getline(iss, firstMessage);
+    // place the end of line back onto the end of the first message
+    firstMessage += "\n";
+
+    // identify the remaining data
+    std::string remaining;
+    std::getline(iss, remaining, '\0');
+
+    // put the remaining data back into the output buffer
+    outbuf_.str(remaining);
+
+    // update the data to write based on the first message
+    writebuf = std::make_shared<std::string>(firstMessage);
 
     auto self(shared_from_this());
     async_write(socket_, boost::asio::buffer(*writebuf), strand_.wrap([this, self, writebuf](const boost::system::error_code &ec, size_t len) {
@@ -120,7 +127,6 @@ void JsonOutput::InternalWrite(SharedMessageVector messages) {
 void WiffleOutput::InternalWrite(SharedMessageVector messages) {
     for (const auto &message : *messages) {
         Buf() << AdsbMessage(message) << '\n';
-        Flush();
     }
 }
 
