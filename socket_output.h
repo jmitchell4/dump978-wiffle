@@ -35,10 +35,10 @@ namespace flightaware::uat {
         std::ostringstream &Buf() { return outbuf_; }
 
         virtual void InternalWrite(SharedMessageVector messages) = 0;
+        void Flush();
 
       private:
         void HandleError(const boost::system::error_code &ec);
-        void Flush();
         void ReadAndDiscard();
 
         boost::asio::io_service &service_;

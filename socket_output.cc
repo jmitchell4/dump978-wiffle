@@ -45,13 +45,29 @@ void SocketOutput::Write(SharedMessageVector messages) {
 void SocketOutput::Flush() {
     if (flush_pending_)
         return;
-
+    
     auto writebuf = std::make_shared<std::string>(outbuf_.str());
     if (writebuf->empty())
         return;
 
     flush_pending_ = true;
-    outbuf_.str(std::string());
+
+    // extract the first line from the data 
+    std::istringstream iss(*writebuf);
+    std::string firstMessage;
+    std::getline(iss, firstMessage);
+    // place the end of line back onto the end of the first message
+    firstMessage += "\n";
+
+    // identify the remaining data
+    std::string remaining;
+    std::getline(iss, remaining, '\0');
+
+    // put the remaining data back into the output buffer
+    outbuf_.str(remaining);
+
+    // update the data to write based on the first message
+    writebuf = std::make_shared<std::string>(firstMessage);
 
     auto self(shared_from_this());
     async_write(socket_, boost::asio::buffer(*writebuf), strand_.wrap([this, self, writebuf](const boost::system::error_code &ec, size_t len) {
